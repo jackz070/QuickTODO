@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+}
+
+.todo_list {
+  width: 24rem;
+  min-height: 5rem;
+}
+
+.todo_list-active {
+  background-color: green;
+}
+.todo_list-remove {
+  background-color: red;
+}

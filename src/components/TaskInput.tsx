@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { Actions } from "../TodoReducer";
 
+import { Plus } from "tabler-icons-react";
+
 import "./TaskInput.css";
 
 interface Props {
@@ -35,8 +37,8 @@ export const InputField = ({ dispatch }: Props) => {
         onChange={(e) => setTodo(e.target.value)}
         ref={inputRef}
       />
-      <button className="input_submit" type="submit">
-        +
+      <button className="input_submit" type="submit" title="Create task">
+        <Plus size={48} strokeWidth={2.5} color={"var(--blue)"} />
       </button>
     </form>
   );

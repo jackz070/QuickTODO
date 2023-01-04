@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Actions } from "../TodoReducer";
 import { Todo } from "../types";
+import { Check, Edit, Trash, DeviceFloppy } from "tabler-icons-react";
 
 import "./TodoCard.css";
 
@@ -15,7 +16,7 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
   const [edit, setEdit] = useState<boolean>(false);
   const [editTodo, setEditTodo] = useState<string>(todo.task);
 
-  const editInputRef = useRef<HTMLInputElement>(null);
+  const editInputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleDone = (id: number, e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +32,6 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
     e.preventDefault();
 
     dispatch({ type: "edit_todo", payload: { id: id, updatedTask: editTodo } });
-
     setEdit(false);
   };
 
@@ -39,46 +39,94 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
     editInputRef.current?.focus();
   }, [edit]);
 
+  useEffect(() => {}, [todo.isDone]);
+
   return (
     <Draggable draggableId={todo.id.toString()} index={index}>
-      {(provided) => (
+      {(provided, snapshot) => (
         <form
-          className="todo_card"
+          className={`todo_card ${snapshot.isDragging && "todo_card-dragging"}`}
           onSubmit={(e) => handleEdit(todo.id, e)}
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
           {edit ? (
-            <div>
-              <input
+            <div className="todo_card-edit">
+              <textarea
                 value={editTodo}
                 onChange={(e) => {
                   setEditTodo(e.target.value);
                 }}
                 ref={editInputRef}
               />
-              <button type="submit">SAVE</button>
             </div>
-          ) : todo.isDone ? (
-            <s>{todo.task}</s>
           ) : (
-            <div>{todo.task}</div>
+            <div className="todo_card-text">{todo.task}</div>
           )}
-
-          <div className="todo_buttons">
-            <button onClick={(e) => handleDone(todo.id, e)}>Done</button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (!edit && !todo.isDone) {
-                  setEdit(!edit);
-                }
-              }}
-            >
-              Edit
-            </button>
-            <button onClick={(e) => handleDelete(todo.id, e)}>Delete</button>
+          <div {...provided.dragHandleProps} className="todo_card-dragHandle">
+            ....
+          </div>
+          <div className={`todo_buttons ${edit ? "todo_buttons-edit" : null}`}>
+            {edit && (
+              <div>
+                <button
+                  type="submit"
+                  title="Save changes"
+                  className="greenButtonHover"
+                >
+                  <DeviceFloppy
+                    size={20}
+                    strokeWidth={2}
+                    color={"var(--darkerGray)"}
+                  />
+                </button>
+              </div>
+            )}
+            <div>
+              {!edit && !todo.isDone && (
+                <button
+                  onClick={(e) => handleDone(todo.id, e)}
+                  title="Mark as done"
+                  className={`greenButtonHover`}
+                >
+                  <Check
+                    size={20}
+                    strokeWidth={2}
+                    color={"var(--darkerGray)"}
+                  />
+                </button>
+              )}
+              {!todo.isDone && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (!todo.isDone) {
+                      if (edit === true) {
+                        setEditTodo(todo.task);
+                      }
+                      setEdit(!edit);
+                    }
+                  }}
+                  title={edit ? "Discard changes" : "Edit task"}
+                  className={`${edit && "redButtonHover"}`}
+                >
+                  <Edit size={20} strokeWidth={2} color={"var(--darkerGray)"} />
+                </button>
+              )}
+              {!edit && (
+                <button
+                  onClick={(e) => handleDelete(todo.id, e)}
+                  title="Delete task"
+                  className="redButtonHover"
+                >
+                  <Trash
+                    size={20}
+                    strokeWidth={2}
+                    color={"var(--darkerGray)"}
+                  />
+                </button>
+              )}
+            </div>
           </div>
         </form>
       )}

@@ -1,7 +1,20 @@
+:root {
+  --light: #ffffff;
+  --gray: #f4f6f8;
+  --darkerGray: #b0b0b2;
+  --dark: #393334;
+  --red: #e73112;
+  --lightBlue: #afbcd4;
+  --blue: #1154a5;
+  --darkerBlue: #022a71;
+}
+
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+
+  font-family: "Ubuntu", sans-serif;
 }
 
 .app_container {
@@ -10,28 +23,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #fafafa;
+  background-color: var(--gray);
   font-size: 14px;
 }
 
 header {
-  font-family: sans-serif;
-
-  background-color: hsl(0, 100%, 71%);
-  color: white;
+  color: var(--dark);
   width: 100%;
 
-  text-transform: uppercase;
-  font-size: 2rem;
   z-index: 1;
   text-align: left;
 
   padding: 1.5rem 1rem;
+
+  display: flex;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+
+  margin-left: 0.75rem;
 }
 
 main {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
+  align-items: center;
 }
+

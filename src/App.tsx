@@ -8,7 +8,7 @@ import { Todo } from "./types";
 import { State } from "./TodoReducer";
 
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-
+import { Bulb } from "tabler-icons-react";
 import "./App.css";
 
 // TODO re active-completed: option A: create second state reducer option B: use same reducer, add second piece of state to it option C: use a simple flag on task for it (sounds bad, if I add more columns it will get messy)
@@ -23,7 +23,7 @@ const App: React.FunctionComponent = () => {
       ? JSON.parse(localStorage.getItem("todos") || "")
       : { activeTodos: [], completedTodos: [] };
   };
-
+  // TODO fix counter AKA state updates, wiggly animation on drop, edit mode UI
   const [state, dispatch] = useReducer(TodoReducer, initialState, initializer);
 
   useEffect(() => {
@@ -31,20 +31,23 @@ const App: React.FunctionComponent = () => {
   }, [state]);
 
   const onDragEnd = (result: DropResult) => {
-    console.log(result);
-
     const { source, destination } = result;
+
+    if (!destination) {
+      return;
+    }
+
     if (
-      !destination ||
-      (destination.droppableId === source.droppableId &&
-        destination.index === source.index)
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
     ) {
       return;
     }
 
-    let add,
-      active = state.activeTodos,
-      complete = state.completedTodos;
+    let add: Todo,
+      active: Todo[] = [...state.activeTodos],
+      complete: Todo[] = [...state.completedTodos];
+    console.log(source, destination, active, complete);
 
     if (source.droppableId === "activeTodosList") {
       add = active[source.index];
@@ -59,17 +62,26 @@ const App: React.FunctionComponent = () => {
     } else {
       complete.splice(destination.index, 0, add);
     }
-    // TODO how to do this with my usereducer dispatch???
-    state.completedTodos = complete;
+
+    dispatch({ type: "set_active", payload: active });
+    dispatch({ type: "set_complete", payload: complete });
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="app_container">
-        <header className="header">Toodoo appoo</header>
+        <header className="header">
+          <Bulb size={48} strokeWidth={1.9} />
+          <h1>QuickTODO</h1>
+        </header>
         <main>
           <InputField dispatch={dispatch} />
-          <TodoList state={state} dispatch={dispatch} />
+          <TodoList
+            state={state}
+            dispatch={dispatch}
+            activeLength={state.activeTodos.length}
+            completedLength={state.completedTodos.length}
+          />
         </main>
       </div>
     </DragDropContext>

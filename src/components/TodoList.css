@@ -16,11 +16,6 @@
   align-items: center;
 }
 
-.todo_list-active {
-}
-.todo_list-remove {
-}
-
 .todo_list-header {
   display: flex;
   align-items: center;
@@ -40,24 +35,12 @@
 }
 
 .todo_list-empty {
+  max-width: 70%;
   color: var(--darkerGray);
   font-weight: lighter;
-  max-width: 70%;
   margin: 0 auto;
   text-align: center;
   padding-top: 3rem;
-}
-
-.todo_list-empty-CTA {
-  display: block;
-  color: var(--blue);
-  filter: brightness(1.4);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.todo_list-empty-CTA:hover {
-  filter: brightness(1);
 }
 
 .todo_list-draggingOver {

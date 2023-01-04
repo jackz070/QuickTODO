@@ -67,7 +67,7 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
             ....
           </div>
           <div className={`todo_buttons ${edit ? "todo_buttons-edit" : null}`}>
-            {edit && (
+            {edit ? (
               <div>
                 <button
                   type="submit"
@@ -81,9 +81,9 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
                   />
                 </button>
               </div>
-            )}
+            ) : null}
             <div>
-              {!edit && !todo.isDone && (
+              {!edit && !todo.isDone ? (
                 <button
                   onClick={(e) => handleDone(todo.id, e)}
                   title="Mark as done"
@@ -95,8 +95,8 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
                     color={"var(--darkerGray)"}
                   />
                 </button>
-              )}
-              {!todo.isDone && (
+              ) : null}
+              {!todo.isDone ? (
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -112,8 +112,8 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
                 >
                   <Edit size={20} strokeWidth={2} color={"var(--darkerGray)"} />
                 </button>
-              )}
-              {!edit && (
+              ) : null}
+              {!edit ? (
                 <button
                   onClick={(e) => handleDelete(todo.id, e)}
                   title="Delete task"
@@ -125,7 +125,7 @@ const TodoCard: React.FC<Props> = ({ todo, dispatch, index }) => {
                     color={"var(--darkerGray)"}
                   />
                 </button>
-              )}
+              ) : null}
             </div>
           </div>
         </form>

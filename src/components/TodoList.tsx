@@ -19,10 +19,6 @@ const TodoList: React.FC<Props> = ({
   activeLength,
   completedLength,
 }) => {
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
   return (
     <div className="container">
       <div className="todo_list">
@@ -40,8 +36,9 @@ const TodoList: React.FC<Props> = ({
             >
               {state.activeTodos.length === 0 && (
                 <div className="todo_list-empty">
-                  There are no active tasks. Are you sure?
-                  <span className="todo_list-empty-CTA">Add a new one!</span>
+                  There are no active tasks.
+                  <br />
+                  Try adding one!
                 </div>
               )}
               {state?.activeTodos?.map((todo, index) => (
@@ -74,7 +71,8 @@ const TodoList: React.FC<Props> = ({
             >
               {state.completedTodos.length === 0 && (
                 <div className="todo_list-empty">
-                  There are no completed tasks yet. Get to work!
+                  No tasks completed yet. <br />
+                  Get to work!
                 </div>
               )}
               {state?.completedTodos?.map((todo, index) => (

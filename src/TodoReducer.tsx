@@ -1,4 +1,5 @@
 //@ts-nocheck
+// line above here to disable errors related to wrong types inferred by TypeScript for action.payload in "edit_todo" case, where it infers type "number" | (correct object type) which leads to heaps of "property X doesn't exist in type number". It's impossible for action.payload to be number, it;s never dispatched that way and it just doesn't make sense for it to be. StackOverflow and discussion over in TS repo issues suggests that it's their problem.
 import { Todo } from "./types";
 
 export type Actions =
@@ -11,16 +12,18 @@ export type Actions =
 
 export type State = { activeTodos: Todo[]; completedTodos: Todo[] };
 
+// state is updated with all the copies so that it is not mutated. This fixed the problem I had at the beginning with values displayed in the DOM not updating correctly; it turned out that I'm mutating state which makes React not realize it's changing at all as reference stays the same.
 export const TodoReducer = (state: State, action: Actions): State => {
   switch (action.type) {
     case "add_todo":
       return {
         activeTodos: [
           ...state.activeTodos,
-          { id: Date.now(), task: action.payload, isDone: false },
+          { id: Date.now(), task: action.payload.trim(), isDone: false },
         ],
         completedTodos: [...state.completedTodos],
       };
+
     case "delete_todo":
       if (state.activeTodos.some((todo) => todo.id === action.payload)) {
         return {
@@ -39,6 +42,7 @@ export const TodoReducer = (state: State, action: Actions): State => {
           ),
         };
       }
+
     case "done_todo":
       const thisTodo = state.activeTodos.find(
         (todo) => todo.id === action.payload
@@ -55,48 +59,16 @@ export const TodoReducer = (state: State, action: Actions): State => {
           ],
         };
       }
-    // if (state.activeTodos.some((todo) => todo.id === action.payload)) {
-    //   return {
-    //     activeTodos: state.activeTodos.map((todo) =>
-    //       todo?.id === action.payload
-    //         ? { ...todo, isDone: !todo.isDone }
-    //         : todo
-    //     ),
-    //     completedTodos: [...state.completedTodos],
-    //   };
-    // } else if (
-    //   state.completedTodos.some((todo) => todo.id === action.payload)
-    // ) {
-    //   return {
-    //     activeTodos: [...state.activeTodos],
-    //     completedTodos: state.completedTodos.map((todo) =>
-    //       todo?.id === action.payload
-    //         ? { ...todo, isDone: !todo.isDone }
-    //         : todo
-    //     ),
-    //   };
-    // }
 
     case "edit_todo":
       if (state.activeTodos.some((todo) => todo.id === action.payload.id)) {
         return {
           activeTodos: state.activeTodos.map((todo) =>
             todo.id === action.payload.id
-              ? { ...todo, task: action.payload.updatedTask }
+              ? { ...todo, task: action.payload.updatedTask.trim() }
               : todo
           ),
           completedTodos: [...state.completedTodos],
-        };
-      } else if (
-        state.completedTodos.some((todo) => todo.id === action.payload.id)
-      ) {
-        return {
-          activeTodos: [...state.activeTodos],
-          completedTodos: state.completedTodos.map((todo) =>
-            todo.id === action.payload.id
-              ? { ...todo, task: action.payload.updatedTask }
-              : todo
-          ),
         };
       }
 

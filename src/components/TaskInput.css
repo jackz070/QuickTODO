@@ -1,7 +1,7 @@
 .input {
+  width: 90%;
   display: flex;
   align-items: center;
-  width: 90%;
   max-width: 26rem;
   position: relative;
 }
@@ -15,19 +15,21 @@
 
   margin: 2rem 2rem;
   padding: 0.75rem 2rem;
-  transition: 0.2s;
+  transition: all 0.2s;
 }
 .input_box::placeholder {
   color: var(--darkerGray);
 }
 
 .input_submit {
-  position: absolute;
-  right: 2.25rem;
-  border-radius: 50%;
-  padding: 0.5rem;
   width: 2rem;
   height: 2rem;
+
+  position: absolute;
+  right: 2.25rem;
+
+  border-radius: 50%;
+  padding: 0.5rem;
   background: none;
   display: flex;
   align-items: center;
@@ -44,6 +46,14 @@
 
 .input_submit:active {
   transform: scale(0.95);
+}
+
+.input_error {
+  position: absolute;
+  top: 4.75rem;
+  left: 4rem;
+  font-size: 0.7rem;
+  color: var(--red);
 }
 
 @media screen and (max-width: 450px) {

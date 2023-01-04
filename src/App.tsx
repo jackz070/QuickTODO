@@ -1,9 +1,8 @@
-import React, { useReducer, useEffect, useState } from "react";
+import React, { useReducer, useEffect } from "react";
 import { TodoReducer } from "./TodoReducer";
 import { InputField } from "./components/TaskInput";
 import TodoList from "./components/TodoList";
 
-import { Actions } from "./TodoReducer";
 import { Todo } from "./types";
 import { State } from "./TodoReducer";
 
@@ -11,28 +10,27 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Bulb } from "tabler-icons-react";
 import "./App.css";
 
-// TODO re active-completed: option A: create second state reducer option B: use same reducer, add second piece of state to it option C: use a simple flag on task for it (sounds bad, if I add more columns it will get messy)
-
 const App: React.FunctionComponent = () => {
-  // Declare reducer state for whole app to use
-
   const initialState: State = { activeTodos: [], completedTodos: [] };
 
+  // Initializer function for useReducer retrieves todos from localStorage if there are any. Empty string in getItem is there for TS to be happy, it's an impossible case (if "todos" are there they will be retrieved, if not state will be set to default by what's in the other part of the expression)
   const initializer = () => {
     return localStorage.getItem("todos")
       ? JSON.parse(localStorage.getItem("todos") || "")
       : { activeTodos: [], completedTodos: [] };
   };
-  // TODO fix counter AKA state updates, wiggly animation on drop, edit mode UI
+
+  // Declare state from reducer for whole app, to be passed down as prop
   const [state, dispatch] = useReducer(TodoReducer, initialState, initializer);
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(state));
   }, [state]);
 
+  // Function comes from React Beautiful Drag and Drop
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
-
+    // First check if the draggable item is not dropped outside of the lists or in the same list, same index => no change
     if (!destination) {
       return;
     }
@@ -43,12 +41,11 @@ const App: React.FunctionComponent = () => {
     ) {
       return;
     }
-
+    // Then create helpers: the todo that is dragged and copies of state representing both lists. Copies because we don't want to mutate state.
     let add: Todo,
       active: Todo[] = [...state.activeTodos],
       complete: Todo[] = [...state.completedTodos];
-    console.log(source, destination, active, complete);
-
+    // Step 1: see where the item is picked up from, save it to add variable, remove from source list
     if (source.droppableId === "activeTodosList") {
       add = active[source.index];
       active.splice(source.index, 1);
@@ -56,13 +53,23 @@ const App: React.FunctionComponent = () => {
       add = complete[source.index];
       complete.splice(source.index, 1);
     }
-
+    // Step 2: depending on which list it's dropped to set correct isDone state, update correct todo list in reducer state with isDone status so that it displays correct buttons, update temporary copy of correct list
     if (destination.droppableId === "activeTodosList") {
+      add.isDone = false;
+      dispatch({
+        type: "set_active",
+        payload: [...state.activeTodos, add],
+      });
       active.splice(destination.index, 0, add);
     } else {
+      add.isDone = true;
+      dispatch({
+        type: "set_complete",
+        payload: [...state.completedTodos, add],
+      });
       complete.splice(destination.index, 0, add);
     }
-
+    // Step 3 update correct piece of state with right copy
     dispatch({ type: "set_active", payload: active });
     dispatch({ type: "set_complete", payload: complete });
   };

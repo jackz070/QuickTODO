@@ -28,16 +28,13 @@
 }
 
 header {
-  color: var(--dark);
   width: 100%;
-
-  z-index: 1;
-  text-align: left;
-
-  padding: 1.5rem 1rem;
-
   display: flex;
   align-items: center;
+  color: var(--dark);
+  z-index: 1;
+  text-align: left;
+  padding: 1.5rem 1rem;
 }
 
 header h1 {
@@ -52,7 +49,5 @@ main {
   width: 100%;
   display: flex;
   flex-direction: column;
-
   align-items: center;
 }
-

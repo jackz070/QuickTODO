@@ -43,7 +43,7 @@ export const InputField = ({ dispatch }: Props) => {
       }}
     >
       <input
-        type="input"
+        type="text"
         placeholder="Add a task"
         className="input_box"
         value={todo}

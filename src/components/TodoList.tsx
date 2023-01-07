@@ -23,7 +23,8 @@ const TodoList: React.FC<Props> = ({
     <div className="container">
       <div className="todo_list">
         <div className="todo_list-header">
-          <h3>Active Tasks</h3> <span>{activeLength}</span>
+          <h3>Active Tasks</h3>{" "}
+          <span data-testid="activeCounter">{activeLength}</span>
         </div>
         <Droppable droppableId="activeTodosList">
           {(provided, snapshot) => (
@@ -58,7 +59,7 @@ const TodoList: React.FC<Props> = ({
       <div className="todo_list">
         <div className="todo_list-header">
           <h3>Completed Tasks</h3>
-          <span>{completedLength}</span>
+          <span data-testid="completedCounter">{completedLength}</span>
         </div>
         <Droppable droppableId="completedTodosList">
           {(provided, snapshot) => (

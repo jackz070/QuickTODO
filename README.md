@@ -2,6 +2,9 @@
 
 A simple to-do app built to practice TypeScript in React.
 
+## Live Version
+https://beautiful-fairy-ee9b71.netlify.app/
+
 ## Features AKA what I've learnt
 
 - Wrote in TypeScript / React
